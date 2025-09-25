@@ -6,17 +6,19 @@ I wrote two testcases. One checking the user credentials of a logged in User and
 ## Test cases
 
 ### Postive test: Check user credentials of a logged in user
-Scenario: User logs in and wants to verify their credentials
-Steps to reproduce
+**Scenario:** User logs in and wants to verify their credentials
+
+**Steps to reproduce**
 - User accepts CMP and goes through onboarding flow
 - User logs in with valid credentials
 - User navigates to Meine Konto page and their credentials are displayed correctly
 
-Expected result: User's credentials are displayed correctly on the Meine Konto page
+**Expected result:** User's credentials are displayed correctly on the Meine Konto page
 
 ### Negative test: Verify force log out when user credentials expire
-Scenario: User's credentials expire and they should be logged out automatically
-Steps to reproduce
+**Scenario:** User's credentials expire and they should be logged out automatically
+
+**Steps to reproduce**
 - User accepts CMP and goes through onboarding flow
 - User logs in with valid credentials
 - User's credentials are set to expire. (In real-time this would be incase a user doesn't open the application for a long time. For this test case, I cleared the app data to simulate this)
@@ -24,9 +26,23 @@ Steps to reproduce
 - User credentials should not be displayed on the Meine Konto page
 - User should be prompted to log in again
 
-Expected result: User is logged out automatically when credentials expire and prompted to log in again
+**Expected result:** User is logged out automatically when credentials expire and prompted to log in again
 
 ## Architecture and choices
+Project structure:
+```
+src
+└── test
+    ├── java
+    │   └── com
+    │       └── bild
+    │           └── qa
+    │               ├── BaseTest.java
+    │               ├── PositiveTest.java
+    │               └── NegativeTest.java
+    └── resources
+        └── config.properties
+``` 
 - I used Appium and Java to write the test cases
 - Emulator: Pixel 9 Pro API 36
 - I mostly used UiSelector to locate elements as the application did not have consistent resource ids (In the future, using resource ids would be more reliable to avoid flaky tests)
@@ -86,3 +102,38 @@ adb devices
 ````
 emulator -avd Pixel_9_Pro
 ````
+### Running the tests
+Start Appium server:
+````
+appium
+````
+In another terminal, navigate to the project directory and run:
+````
+mvn test
+````
+To run a specific test class:
+````
+mvn -Dtest=ClassName test
+````
+Replace `ClassName` with the desired test class name.
+
+### Appium Inspector (Optional)
+To inspect elements, use Appium Inspector:
+- Open Appium Desktop → Start New Session.
+- Set Desired Capabilities:
+````
+{
+  "platformName": "Android",
+  "deviceName": "Pixel_9_Pro",
+  "app": "/path/to/your/app.apk",
+  "automationName": "UiAutomator2"
+}
+````
+- Click “Start Session” to inspect elements.  
+- Use the Inspector to locate elements and generate selectors.
+
+## Notes
+- Ensure the emulator is running before starting Appium server.
+- Adjust paths and versions as necessary for your environment.
+- For real devices, enable Developer Options and USB Debugging.
+- The app used in this project is assumed to be pre-installed on the emulator/device.
