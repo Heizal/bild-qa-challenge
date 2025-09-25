@@ -10,9 +10,12 @@ jobs:
   ui-tests:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ./
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
@@ -35,37 +38,15 @@ jobs:
           appium driver install uiautomator2
           appium -v
 
-      - name: Create & Start Emulator
+      - name: Start Emulator & Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 30
-          target: google_apis
+          api-level: 34
           arch: x86_64
           profile: pixel_6
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio
           disable-animations: true
-          script: |
-            adb wait-for-device
-            adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done'
-            echo "Emulator is ready"
-
-      - name: Wait for emulator to be ready
-        run: |
-          adb wait-for-device
-          until adb shell getprop sys.boot_completed | grep 1; do
-            sleep 5
-          done
-          adb shell input keyevent 82
-
-      - name: Run Tests
-        env:
-          TEST_EMAIL: ${{ secrets.TEST_EMAIL }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-          DEVICE_NAME: ${{ secrets.DEVICE_NAME }}
-          PLATFORM_NAME: ${{ secrets.PLATFORM_NAME }}
-          APP_PACKAGE: ${{ secrets.APP_PACKAGE }}
-          APP_ACTIVITY: ${{ secrets.APP_ACTIVITY }}
-        run: mvn -B test
+          script: mvn -B test
 
       - name: Upload Surefire Reports
         if: always()
