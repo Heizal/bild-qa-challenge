@@ -30,13 +30,19 @@ public class PositiveTest extends BaseTest {
         driver.findElement(AppiumBy.androidUIAutomator("new UiSelector().text(\"ANMELDEN\")")).click();
 
         //Login with valid credentials
-        driver.findElement(AppiumBy.androidUIAutomator("new UiSelector().resourceId(\"identifier\")")).sendKeys("testuserwelt@gmail.com");
-        driver.findElement(AppiumBy.androidUIAutomator("new UiSelector().resourceId(\"password\")")).sendKeys("12345678");
+        driver.findElement(AppiumBy.androidUIAutomator("new UiSelector().resourceId(\"identifier\")")).sendKeys(testEmail);
+        driver.findElement(AppiumBy.androidUIAutomator("new UiSelector().resourceId(\"password\")")).sendKeys(testPassword);
 
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(
                         AppiumBy.androidUIAutomator("new UiSelector().text(\"JETZT ANMELDEN\")")
                 )).click();
+
+        //Recovery against article flakiness
+        if (driver.findElements(AppiumBy.androidUIAutomator("new UiSelector().description(\"article\")")).size() > 0) {
+            System.out.println("Oops, landed in article. Going back...");
+            driver.navigate().back();
+        }
 
         //Verify that user is logged in
         new WebDriverWait(driver, Duration.ofSeconds(20))
