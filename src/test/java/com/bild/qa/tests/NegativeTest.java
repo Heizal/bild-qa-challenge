@@ -68,7 +68,7 @@ public class NegativeTest extends BaseTest {
             throw new RuntimeException(e);
         }
 
-        // --- Step 3: Relaunch app ---
+        //  Relaunch app
         driver.terminateApp(appPackage);
         driver.activateApp(appPackage);
 

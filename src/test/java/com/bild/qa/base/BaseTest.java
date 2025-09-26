@@ -13,12 +13,9 @@ import java.time.Duration;
 public class BaseTest {
     protected AndroidDriver driver;
 
-    // Load dotenv, but don’t crash if missing (important for CI)
     protected static Dotenv dotenv = Dotenv.configure()
             .ignoreIfMissing()
             .load();
-
-    // Pull from system env first (CI), fallback to dotenv (local dev)
     protected String testEmail = getEnv("TEST_EMAIL");
     protected String testPassword = getEnv("TEST_PASSWORD");
 
