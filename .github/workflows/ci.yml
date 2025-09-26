@@ -41,12 +41,15 @@ jobs:
       - name: Start Emulator & Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: 30
           arch: x86_64
-          profile: pixel_6
-          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio
+          profile: pixel_5
+          target: 'default'
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
-          script: mvn -B test
+          script: |
+            adb devices -l
+            mvn -B test
 
       - name: Upload Surefire Reports
         if: always()
