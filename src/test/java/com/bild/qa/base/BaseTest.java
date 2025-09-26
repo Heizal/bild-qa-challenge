@@ -13,10 +13,25 @@ import java.time.Duration;
 public class BaseTest {
     protected AndroidDriver driver;
 
-    protected static Dotenv dotenv = Dotenv.load();
+    // Load dotenv, but don’t crash if missing (important for CI)
+    protected static Dotenv dotenv = Dotenv.configure()
+            .ignoreIfMissing()
+            .load();
 
-    protected String testEmail = dotenv.get("TEST_EMAIL");
-    protected String testPassword = dotenv.get("TEST_PASSWORD");
+    // Pull from system env first (CI), fallback to dotenv (local dev)
+    protected String testEmail = getEnv("TEST_EMAIL");
+    protected String testPassword = getEnv("TEST_PASSWORD");
+
+    private static String getEnv(String key) {
+        String value = System.getenv(key);
+        if (value == null && dotenv != null) {
+            value = dotenv.get(key);
+        }
+        if (value == null) {
+            throw new RuntimeException("Missing required env var: " + key);
+        }
+        return value;
+    }
 
     @BeforeEach
     public void setUp() throws MalformedURLException {

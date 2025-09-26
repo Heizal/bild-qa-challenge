@@ -31,6 +31,13 @@ I wrote two testcases. One checking the user credentials of a logged in User and
 ## Architecture and choices
 Project structure:
 ```
+bild-qa-challenge
+├── .github
+│   └── workflows
+│       └── ci.yml
+└── artifacts
+    └── PositiveTest.mp4
+    └── NegativeTest.mp4
 src
 └── test
     ├── java
@@ -40,8 +47,14 @@ src
     │               ├── BaseTest.java
     │               ├── PositiveTest.java
     │               └── NegativeTest.java
-    └── resources
-        └── config.properties
+target
+└── surefire-reports
+    ├── PositiveTest.txt
+    └── NegativeTest.txt
+├── pom.xml
+├── README.md
+
+
 ``` 
 - I used Appium and Java to write the test cases
 - Emulator: Pixel 9 Pro API 36
@@ -101,6 +114,18 @@ adb devices
 - Start emulator:
 ````
 emulator -avd Pixel_9_Pro
+````
+
+### Environment Variables
+Set the following environment variables:
+````
+TEST_EMAIL=testexample@email.com
+TEST_PASSWORD=yourpassword
+DEVICE_NAME=your_emulator_or_device_name
+PLATFORM_NAME=Android
+PLATFORM_VERSION=16
+APP_PACKAGE=com.netbiscuits.bild.android
+APP_ACTIVITY=de.bild.android.app.MainActivity
 ````
 ### Running the tests
 Start Appium server:
