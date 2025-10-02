@@ -57,7 +57,32 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            adb devices -l
+            # More robust wait for emulator
+            MAX_TRIES=30
+            COUNT=0
+            while [ $COUNT -lt $MAX_TRIES ]; do
+              echo "Waiting for emulator to start (attempt: $COUNT)"
+              STATUS=$(adb devices | grep emulator | grep device)
+              if [ ! -z "$STATUS" ]; then
+                echo "Emulator is online!"
+                break
+              fi
+              sleep 10
+              COUNT=$((COUNT+1))
+            done
+            
+            if [ $COUNT -eq $MAX_TRIES ]; then
+              echo "Emulator failed to start."
+              exit 1
+            fi
+            
+            # Wait for boot to complete
+            adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 5; echo "Waiting for boot to complete..."; done; echo "Boot completed"'
+            
+            # Give additional time for system services to stabilize
+            sleep 20
+            
+            # Run actual tests
             mvn -B test
 
       - name: Upload Surefire Reports
