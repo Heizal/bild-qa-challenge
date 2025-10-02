@@ -42,6 +42,11 @@ jobs:
           npm install -g appium
           appium driver install uiautomator2
           appium -v
+      - name: Start Appium Server
+        run: |
+          appium --address 127.0.0.1 --port 4723 --session-override --log-level info &
+          sleep 15
+        shell: bash
 
       - name: Start Emulator & Run Tests
         uses: reactivecircus/android-emulator-runner@v2
