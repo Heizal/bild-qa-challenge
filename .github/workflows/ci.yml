@@ -44,9 +44,8 @@ jobs:
           appium -v
       - name: Start Appium Server
         run: |
-          appium --address 127.0.0.1 --port 4723 --session-override --log-level info &
-          sleep 15
-        shell: bash
+          appium --address 127.0.0.1 --port 4723 > appium.log 2>&1 &
+          sleep 5  # give server time to boo
 
       - name: Start Emulator & Run Tests
         uses: reactivecircus/android-emulator-runner@v2
